@@ -626,4 +626,117 @@ mysql> SELECT title, stock_quantity,
 +-----------------------------------------------------+----------------+-------+
 19 rows in set (0.00 sec)
 ```
+## Logical Operators Challenge
+```
+mysql> SELECT
+    ->     title,
+    ->     author_lname
+    -> FROM books
+    -> WHERE
+    ->     author_lname LIKE 'C%' OR
+    ->     author_lname LIKE 'S%';
++-----------------------------------------------------+--------------+
+| title                                               | author_lname |
++-----------------------------------------------------+--------------+
+| The Amazing Adventures of Kavalier & Clay           | Chabon       |
+| Just Kids                                           | Smith        |
+| What We Talk About When We Talk About Love: Stories | Carver       |
+| Where I'm Calling From: Selected Stories            | Carver       |
+| Cannery Row                                         | Steinbeck    |
+| Lincoln In The Bardo                                | Saunders     |
++-----------------------------------------------------+--------------+
+6 rows in set (0.04 sec)
 
+mysql> SELECT
+    ->     title,
+    ->     author_lname
+    -> FROM books
+    -> WHERE
+    ->     SUBSTR(author_lname,1,1) = 'C' OR
+    ->     SUBSTR(author_lname,1,1) = 'S';
++-----------------------------------------------------+--------------+
+| title                                               | author_lname |
++-----------------------------------------------------+--------------+
+| The Amazing Adventures of Kavalier & Clay           | Chabon       |
+| Just Kids                                           | Smith        |
+| What We Talk About When We Talk About Love: Stories | Carver       |
+| Where I'm Calling From: Selected Stories            | Carver       |
+| Cannery Row                                         | Steinbeck    |
+| Lincoln In The Bardo                                | Saunders     |
++-----------------------------------------------------+--------------+
+6 rows in set (0.01 sec)
+
+mysql> SELECT title, author_lname FROM books
+    -> WHERE SUBSTR(author_lname,1,1) IN ('C', 'S');
++-----------------------------------------------------+--------------+
+| title                                               | author_lname |
++-----------------------------------------------------+--------------+
+| The Amazing Adventures of Kavalier & Clay           | Chabon       |
+| Just Kids                                           | Smith        |
+| What We Talk About When We Talk About Love: Stories | Carver       |
+| Where I'm Calling From: Selected Stories            | Carver       |
+| Cannery Row                                         | Steinbeck    |
+| Lincoln In The Bardo                                | Saunders     |
++-----------------------------------------------------+--------------+
+6 rows in set (0.00 sec)
+
+mysql> SELECT
+    ->     title,
+    ->     author_lname,
+    ->     CASE
+    ->         WHEN title LIKE '%stories%' THEN 'Short Stories'
+    ->         WHEN title = 'Just Kids' OR title = 'A Heartbreaking Work of Staggering Genius' THEN 'Memoir'
+
+    ->         ELSE 'Novel'
+    ->     END AS TYPE
+    -> FROM books;
++-----------------------------------------------------+----------------+---------------+
+| title                                               | author_lname   | TYPE          |
++-----------------------------------------------------+----------------+---------------+
+| The Namesake                                        | Lahiri         | Novel         |
+| Norse Mythology                                     | Gaiman         | Novel         |
+| American Gods                                       | Gaiman         | Novel         |
+| Interpreter of Maladies                             | Lahiri         | Novel         |
+| A Hologram for the King: A Novel                    | Eggers         | Novel         |
+| The Circle                                          | Eggers         | Novel         |
+| The Amazing Adventures of Kavalier & Clay           | Chabon         | Novel         |
+| Just Kids                                           | Smith          | Memoir        |
+| A Heartbreaking Work of Staggering Genius           | Eggers         | Memoir        |
+| Coraline                                            | Gaiman         | Novel         |
+| What We Talk About When We Talk About Love: Stories | Carver         | Short Stories |
+| Where I'm Calling From: Selected Stories            | Carver         | Short Stories |
+| White Noise                                         | DeLillo        | Novel         |
+| Cannery Row                                         | Steinbeck      | Novel         |
+| Oblivion: Stories                                   | Foster Wallace | Short Stories |
+| Consider the Lobster                                | Foster Wallace | Novel         |
+| 10% Happier                                         | Harris         | Novel         |
+| fake_book                                           | Harris         | Novel         |
+| Lincoln In The Bardo                                | Saunders       | Novel         |
++-----------------------------------------------------+----------------+---------------+
+19 rows in set (0.01 sec)
+
+mysql> SELECT author_fname, author_lname,
+    ->     CASE
+    ->         WHEN COUNT(*) = 1 THEN '1 book'
+    ->         ELSE CONCAT(COUNT(*), ' books')
+    ->     END AS COUNT
+    -> FROM books
+    -> GROUP BY author_lname, author_fname;
++--------------+----------------+---------+
+| author_fname | author_lname   | COUNT   |
++--------------+----------------+---------+
+| Raymond      | Carver         | 2 books |
+| Michael      | Chabon         | 1 book  |
+| Don          | DeLillo        | 1 book  |
+| Dave         | Eggers         | 3 books |
+| David        | Foster Wallace | 2 books |
+| Neil         | Gaiman         | 3 books |
+| Dan          | Harris         | 1 book  |
+| Freida       | Harris         | 1 book  |
+| Jhumpa       | Lahiri         | 2 books |
+| George       | Saunders       | 1 book  |
+| Patti        | Smith          | 1 book  |
+| John         | Steinbeck      | 1 book  |
++--------------+----------------+---------+
+12 rows in set (0.06 sec)
+```
